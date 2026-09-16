@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08783e">
+  <title>Minha área — Reserva de Salas IFPB</title>
+  <style>
+    :root{--green:#0b7d40;--green2:#075e32;--pale:#edf8f1;--ink:#17212b;--muted:#667085;--line:#d9e1e8;--danger:#b42318;--bg:#f4f7f5}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.45}
+    button,input,select,textarea{font:inherit}.wrap{max-width:840px;margin:auto;padding:18px 14px 40px}
+    header{background:#fff;border-bottom:1px solid var(--line)}.brand{max-width:840px;margin:auto;padding:15px 14px;display:flex;gap:13px;align-items:center}
+    .mark{display:grid;grid-template-columns:repeat(3,8px);gap:3px}.mark i{width:8px;height:8px;background:#168b49;border-radius:1px}.mark i:first-child{background:#e33b2e;border-radius:50%}
+    .brand strong{display:block;font-size:20px}.brand span{color:#08783e;font-size:13px;font-weight:700}
+    h1{font-size:30px;margin:18px 0 4px}h2{font-size:22px;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 20px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 8px 24px rgba(16,24,40,.05)}
+    label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;border:1px solid #b9c4cf;border-radius:9px;padding:13px;background:#fff;color:var(--ink)}
+    input:focus,select:focus,textarea:focus{outline:3px solid rgba(11,125,64,.14);border-color:var(--green)}
+    .btns{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.btn{border:1px solid var(--green);border-radius:9px;padding:12px 16px;font-weight:700;cursor:pointer;background:#fff;color:var(--green2)}
+    .btn.primary{background:var(--green);color:#fff}.btn.danger{border-color:#d92d20;color:#b42318}.btn:disabled{opacity:.55;cursor:wait}
+    .status{border-radius:10px;padding:12px 14px;margin-top:14px}.status:empty{display:none}.info{background:#eef4ff;color:#344054}.ok{background:#eaf8ef;color:#06713b}.err{background:#fff0ee;color:#9f231b}
+    .hidden{display:none!important}.found{background:var(--pale);border:1px solid #b8dfc7;border-radius:12px;padding:15px}.found strong{display:block;font-size:18px}
+    .code{font-size:25px;text-align:center;letter-spacing:7px;font-weight:700}.muted{color:var(--muted);font-size:14px}.link{border:0;background:none;color:var(--green);font-weight:700;text-decoration:underline;cursor:pointer;padding:6px 0}
+    .identity{display:flex;gap:12px;align-items:center}.avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#fff;font-size:22px;font-weight:700}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:var(--muted)}
+    .reservation{border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0;background:#fff}.rhead{display:flex;gap:10px;justify-content:space-between}.rtitle{font-weight:700;font-size:17px}.badge{height:max-content;border-radius:999px;padding:5px 9px;background:#eef2f6;font-size:12px;font-weight:700}.CONFIRMADA,.CONFIRMADA_ALTERADA{background:#eaf8ef;color:#06713b}.EM_ANALISE{background:#fff6df;color:#815500}.RECUSADA,.CANCELADA{background:#fff0ee;color:#9f231b}
+    .schedule{margin-top:12px;padding-top:10px;border-top:1px solid #edf0f2}.schedule div{margin:5px 0}.cancelBox{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+    .spinner{width:18px;height:18px;border:3px solid #cfe5d7;border-top-color:var(--green);border-radius:50%;display:inline-block;vertical-align:-4px;margin-right:8px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+    @media(max-width:600px){h1{font-size:26px}.card{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.rhead{display:block}.badge{display:inline-block;margin-top:7px}.btn{width:100%}}
+  </style>
+</head>
+<body>
+<header><div class="brand"><div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><strong>Reserva de Salas</strong><span>Instituto Federal da Paraíba · Campus Campina Grande</span></div></div></header>
+<main class="wrap">
+  <h1>Minha área</h1><p class="lead">Acompanhe suas solicitações e cancele reservas futuras quando necessário.</p>
+
+  <section id="accessCard" class="card">
+    <div id="identifyStage">
+      <h2>Acessar meu cadastro</h2><p class="muted">Informe sua matrícula ou CPF. Enviaremos um link e um código para o e-mail cadastrado.</p>
+      <label for="identifier">Matrícula ou CPF</label><input id="identifier" inputmode="numeric" autocomplete="off" placeholder="Digite sua matrícula ou CPF">
+      <div class="btns"><button id="locateBtn" class="btn primary" onclick="locate()">Localizar meu cadastro</button></div>
+      <button class="link" onclick="showRegistration()">Ainda não possuo cadastro</button>
+    </div>
+
+    <div id="foundStage" class="hidden">
+      <h2>Cadastro localizado</h2><div id="foundInfo" class="found"></div>
+      <div id="activeActions" class="btns"><button id="sendBtn" class="btn primary" onclick="sendAccess()">Enviar link de acesso</button><button class="btn" onclick="resetFlow()">Voltar</button></div>
+      <div id="inactiveActions" class="btns hidden"><button id="reactivateBtn" class="btn primary" onclick="reactivate()">Solicitar reativação</button><button class="btn" onclick="resetFlow()">Voltar</button></div>
+    </div>
+
+    <div id="emailStage" class="hidden">
+      <h2>Verifique seu e-mail</h2><p id="emailHint"></p><div class="btns"><button class="btn primary" onclick="showCode()">Digitar código de 6 dígitos</button><button id="resendBtn" class="btn" onclick="sendAccess(true)">Reenviar link</button></div>
+    </div>
+
+    <div id="codeStage" class="hidden">
+      <h2>Confirmar código</h2><p id="codeHint" class="muted"></p><label for="code">Código de 6 dígitos</label><input id="code" class="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000">
+      <div class="btns"><button id="validateBtn" class="btn primary" onclick="validateCode()">Entrar na Minha área</button><button class="btn" onclick="backToEmail()">Voltar</button></div>
+    </div>
+
+    <div id="registrationStage" class="hidden">
+      <h2>Solicitar cadastro</h2><label for="regName">Nome completo</label><input id="regName" autocomplete="name"><label for="regId">Matrícula ou CPF</label><input id="regId" inputmode="numeric"><label for="regEmail">E-mail</label><input id="regEmail" type="email" autocomplete="email"><label for="regProfile">Vínculo</label><select id="regProfile"><option value="">Selecione</option><option value="PROFESSOR">Professor</option><option value="SERVIDOR">Servidor</option><option value="COLABORADOR">Colaborador</option><option value="ALUNO_AUTORIZADO">Aluno autorizado</option><option value="OUTRO">Outro</option></select>
+      <div class="btns"><button id="registerBtn" class="btn primary" onclick="register()">Enviar solicitação</button><button class="btn" onclick="resetFlow()">Voltar</button></div>
+    </div>
+    <div id="accessStatus" class="status"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="card"><div class="identity"><div id="avatar" class="avatar">U</div><div><h2 id="personName">Minha área</h2><div id="personMeta" class="muted"></div></div></div><div class="btns"><button class="btn" onclick="loadArea()">Atualizar</button><button class="btn" onclick="logout()">Encerrar acesso</button></div></div>
+    <div class="stats"><div class="stat"><b id="nPending">0</b><span>Em análise</span></div><div class="stat"><b id="nConfirmed">0</b><span>Confirmadas</span></div><div class="stat"><b id="nRejected">0</b><span>Recusadas</span></div><div class="stat"><b id="nCancelled">0</b><span>Canceladas</span></div></div>
+    <div id="areaStatus" class="status"></div><div id="reservations"></div>
+  </section>
+  <footer>Portal público da Minha área · Reserva de Salas IFPB</footer>
+</main>
+<script>
+const API='https://script.google.com/macros/s/AKfycbw7cmPvoPfxgPifx6njSjuAR1RxSoCiUNQ4Tx1cTxU-68UTaDKf7AUq_5lOsDwS3S9dlw/exec';
+let challengeId='',maskedEmail='',foundActive=false,requestSeq=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function status(id,text,type='info'){const el=$(id);el.className='status '+(type==='error'?'err':type==='success'?'ok':'info');el.textContent=text||'';}
+function api(action,params={}){return new Promise((resolve,reject)=>{const cb='__ifpbCb'+Date.now()+'_'+(++requestSeq),s=document.createElement('script');let done=false;const clean=()=>{delete window[cb];s.remove();};const timer=setTimeout(()=>{if(done)return;done=true;clean();reject(new Error('O servidor demorou para responder. Verifique a internet e tente novamente.'));},20000);window[cb]=res=>{if(done)return;done=true;clearTimeout(timer);clean();res&&res.ok?resolve(res.dados):reject(new Error(res&&res.erro||'Não foi possível concluir a operação.'));};s.onerror=()=>{if(done)return;done=true;clearTimeout(timer);clean();reject(new Error('Não foi possível conectar ao sistema.'));};const q=new URLSearchParams({api:action,callback:cb});Object.entries(params).forEach(([k,v])=>q.set(k,String(v??'')));s.src=API+'?'+q.toString();document.head.appendChild(s);});}
+function busy(btn,on,label){if(!btn)return;btn.disabled=on;if(on){btn.dataset.old=btn.textContent;btn.innerHTML='<span class="spinner"></span>'+label;}else btn.textContent=btn.dataset.old||btn.textContent;}
+function hideStages(){['identifyStage','foundStage','emailStage','codeStage','registrationStage'].forEach(id=>$(id).classList.add('hidden'));}
+function resetFlow(){challengeId='';maskedEmail='';foundActive=false;hideStages();$('identifyStage').classList.remove('hidden');$('code').value='';status('accessStatus','');}
+async function locate(){const id=$('identifier').value.trim(),b=$('locateBtn');if(!id)return status('accessStatus','Informe sua matrícula ou CPF.','error');busy(b,true,'Localizando...');status('accessStatus','Procurando seu cadastro...');try{const r=await api('localizar',{identificador:id});if(!r.found){status('accessStatus','Cadastro não encontrado. Você pode solicitar um novo cadastro.','error');return;}challengeId=r.challengeId||'';maskedEmail=r.emailMascarado||'';foundActive=!!r.active;hideStages();$('foundStage').classList.remove('hidden');$('foundInfo').innerHTML='<strong>'+esc(r.nomePrimeiro||'Cadastro encontrado')+'</strong>'+(r.active?'Cadastro ativo':'Cadastro inativo')+'<br>E-mail cadastrado: <b>'+esc(maskedEmail||'não informado')+'</b>';$('activeActions').classList.toggle('hidden',!r.active);$('inactiveActions').classList.toggle('hidden',r.active);status('accessStatus','');}catch(e){status('accessStatus',e.message,'error')}finally{busy(b,false)}}
+async function sendAccess(resend=false){const b=$(resend?'resendBtn':'sendBtn');busy(b,true,resend?'Reenviando...':'Enviando...');status('accessStatus','Enviando ao e-mail cadastrado...');try{const r=await api('enviar',{challengeId});hideStages();$('emailStage').classList.remove('hidden');maskedEmail=r.emailMascarado||maskedEmail;$('emailHint').innerHTML='Enviamos para <strong>'+esc(maskedEmail)+'</strong> um link de uso único e um código de 6 dígitos. Ambos são válidos por 15 minutos.';status('accessStatus','Mensagem enviada.','success');}catch(e){status('accessStatus',e.message,'error')}finally{busy(b,false)}}
+function showCode(){hideStages();$('codeStage').classList.remove('hidden');$('codeHint').textContent='Digite o código enviado para '+(maskedEmail||'seu e-mail cadastrado')+'.';status('accessStatus','');setTimeout(()=>$('code').focus(),50)}
+function backToEmail(){hideStages();$('emailStage').classList.remove('hidden');status('accessStatus','')}
+async function validateCode(){const code=$('code').value.replace(/\D/g,''),b=$('validateBtn');if(code.length!==6)return status('accessStatus','Digite os 6 dígitos.','error');busy(b,true,'Validando...');try{const r=await api('validar',{challengeId,codigo:code});saveToken(r.accessToken);await loadArea();}catch(e){status('accessStatus',e.message,'error')}finally{busy(b,false)}}
+async function consumeLink(token){status('accessStatus','Validando o link recebido...');try{const r=await api('consumir',{linkToken:token});saveToken(r.accessToken);history.replaceState({},'',location.pathname);await loadArea();}catch(e){history.replaceState({},'',location.pathname);status('accessStatus',e.message,'error')}}
+function saveToken(t){localStorage.setItem('ifpbMinhaAreaToken',String(t||''))}function token(){return localStorage.getItem('ifpbMinhaAreaToken')||''}
+async function loadArea(){const t=token();if(!t){$('accessCard').classList.remove('hidden');$('dashboard').classList.add('hidden');return;}$('accessCard').classList.add('hidden');$('dashboard').classList.remove('hidden');status('areaStatus','Carregando suas reservas...');$('reservations').innerHTML='';try{const r=await api('minha',{accessToken:t});if(!r||!r.cadastroAvailable){localStorage.removeItem('ifpbMinhaAreaToken');$('dashboard').classList.add('hidden');$('accessCard').classList.remove('hidden');resetFlow();return status('accessStatus','O acesso expirou. Entre novamente.','error');}renderArea(r);}catch(e){status('areaStatus',e.message,'error')}}
+function renderArea(r){$('personName').textContent='Olá, '+String(r.pessoaNome||'').split(/\s+/)[0];$('personMeta').textContent=(r.pessoaNome||'')+(r.pessoaMatricula?' · Matrícula '+r.pessoaMatricula:'');$('avatar').textContent=String(r.pessoaNome||'U').charAt(0).toUpperCase();const c=r.contadores||{};$('nPending').textContent=c.emAnalise||0;$('nConfirmed').textContent=c.confirmadas||0;$('nRejected').textContent=c.recusadas||0;$('nCancelled').textContent=c.canceladas||0;status('areaStatus','');const list=r.items||[];if(!list.length){$('reservations').innerHTML='<div class="card">Nenhuma solicitação encontrada.</div>';return;}$('reservations').innerHTML=list.map(card).join('')}
+function card(x){const prog=(x.programacao||[]).map(g=>'<div><b>'+esc(g.data)+'</b>'+(g.itens||[]).map(i=>'<div>'+esc(i.inicio)+'–'+esc(i.fim)+' · '+esc(i.sala||'Sala não informada')+(i.alterada?' <b>(alterada pela CAA)</b>':'')+'</div>').join('')+'</div>').join('');return '<article class="reservation"><div class="rhead"><div><div class="rtitle">'+esc(x.titulo||'Reserva de sala')+'</div><div class="muted">Protocolo '+esc(x.protocolo)+' · '+esc(x.criadoEm||'')+'</div></div><span class="badge '+esc(x.statusVisual||'')+'">'+esc(x.statusLabel||x.status)+'</span></div><div class="schedule">'+prog+'</div>'+(x.motivoDecisao?'<p class="muted"><b>CAA:</b> '+esc(x.motivoDecisao)+'</p>':'')+(x.podeCancelar?'<div class="cancelBox"><label for="m_'+esc(x.protocolo)+'">Motivo do cancelamento</label><textarea id="m_'+esc(x.protocolo)+'" rows="2"></textarea><div class="btns"><button class="btn danger" onclick="cancelReservation(\''+esc(x.protocolo)+'\',this)">Cancelar reserva</button></div></div>':'')+'</article>'}
+async function cancelReservation(protocol,b){const motivo=$('m_'+protocol).value.trim();if(!motivo)return status('areaStatus','Informe o motivo do cancelamento.','error');if(!confirm('Deseja cancelar esta reserva? A sala será liberada imediatamente.'))return;busy(b,true,'Cancelando...');try{await api('cancelar',{protocolo:protocol,motivo,accessToken:token()});await loadArea();status('areaStatus','Reserva cancelada e sala liberada.','success')}catch(e){status('areaStatus',e.message,'error')}finally{busy(b,false)}}
+async function logout(){const t=token();localStorage.removeItem('ifpbMinhaAreaToken');if(t)api('encerrar',{accessToken:t}).catch(()=>{});$('dashboard').classList.add('hidden');$('accessCard').classList.remove('hidden');resetFlow()}
+function showRegistration(){hideStages();$('registrationStage').classList.remove('hidden');$('regId').value=$('identifier').value;status('accessStatus','')}
+async function register(){const b=$('registerBtn'),data={nome:$('regName').value.trim(),identificador:$('regId').value.trim(),email:$('regEmail').value.trim(),perfil:$('regProfile').value};busy(b,true,'Enviando...');try{const r=await api('cadastro',data);resetFlow();status('accessStatus',r.repetida?'A solicitação já estava aguardando análise.':'Solicitação enviada para análise da CAA.','success')}catch(e){status('accessStatus',e.message,'error')}finally{busy(b,false)}}
+async function reactivate(){const b=$('reactivateBtn');busy(b,true,'Enviando...');try{const r=await api('reativar',{challengeId});status('accessStatus',r.repetida?'A reativação já estava aguardando análise.':'Solicitação de reativação enviada.','success')}catch(e){status('accessStatus',e.message,'error')}finally{busy(b,false)}}
+window.addEventListener('DOMContentLoaded',()=>{const a=new URLSearchParams(location.search).get('acesso');if(a)consumeLink(a);else if(token())loadArea();});
+</script>
+</body>
+</html>
