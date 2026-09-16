@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#08783e">
-  <title>Minha área — Reserva de Salas IFPB</title>
+<title>Minha área – Reserva de Salas IFPB</title>
   <style>
     :root{--green:#0b7d40;--green2:#075e32;--pale:#edf8f1;--ink:#17212b;--muted:#667085;--line:#d9e1e8;--danger:#b42318;--bg:#f4f7f5}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.45}
@@ -78,7 +78,26 @@ let challengeId='',maskedEmail='',foundActive=false,requestSeq=0;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function status(id,text,type='info'){const el=$(id);el.className='status '+(type==='error'?'err':type==='success'?'ok':'info');el.textContent=text||'';}
-function api(action,params={}){return new Promise((resolve,reject)=>{const cb='__ifpbCb'+Date.now()+'_'+(++requestSeq),s=document.createElement('script');let done=false;const clean=()=>{delete window[cb];s.remove();};const timer=setTimeout(()=>{if(done)return;done=true;clean();reject(new Error('O servidor demorou para responder. Verifique a internet e tente novamente.'));},20000);window[cb]=res=>{if(done)return;done=true;clearTimeout(timer);clean();res&&res.ok?resolve(res.dados):reject(new Error(res&&res.erro||'Não foi possível concluir a operação.'));};s.onerror=()=>{if(done)return;done=true;clearTimeout(timer);clean();reject(new Error('Não foi possível conectar ao sistema.'));};const q=new URLSearchParams({api:action,callback:cb});Object.entries(params).forEach(([k,v])=>q.set(k,String(v??'')));s.src=API+'?'+q.toString();document.head.appendChild(s);});}
+async function api(action,params={}){
+  try{
+    const response=await fetch(API,{
+      method:'POST',
+      mode:'cors',
+      redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
+      body:JSON.stringify({action,payload:params})
+    });
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const res=await response.json();
+    if(!res||!res.ok)throw new Error(res&&res.erro||'Não foi possível concluir a operação.');
+    return res.dados;
+  }catch(postError){
+    // Compatibilidade: tenta o canal JSONP oficial do Content Service caso
+    // algum navegador não aceite a resposta POST redirecionada.
+    return apiJsonp(action,params,postError);
+  }
+}
+function apiJsonp(action,params={},postError){return new Promise((resolve,reject)=>{const cb='__ifpbCb'+Date.now()+'_'+(++requestSeq),s=document.createElement('script');let done=false;const clean=()=>{delete window[cb];s.remove();};const timer=setTimeout(()=>{if(done)return;done=true;clean();reject(new Error('O servidor demorou para responder. Verifique a internet e tente novamente.'));},20000);window[cb]=res=>{if(done)return;done=true;clearTimeout(timer);clean();res&&res.ok?resolve(res.dados):reject(new Error(res&&res.erro||'Não foi possível concluir a operação.'));};s.onerror=()=>{if(done)return;done=true;clearTimeout(timer);clean();reject(new Error('A comunicação direta foi bloqueada pelo navegador.'));};const q=new URLSearchParams({api:action,callback:cb});Object.entries(params).forEach(([k,v])=>q.set(k,String(v??'')));s.src=API+'?'+q.toString();document.head.appendChild(s);});}
 function busy(btn,on,label){if(!btn)return;btn.disabled=on;if(on){btn.dataset.old=btn.textContent;btn.innerHTML='<span class="spinner"></span>'+label;}else btn.textContent=btn.dataset.old||btn.textContent;}
 function hideStages(){['identifyStage','foundStage','emailStage','codeStage','registrationStage'].forEach(id=>$(id).classList.add('hidden'));}
 function resetFlow(){challengeId='';maskedEmail='';foundActive=false;hideStages();$('identifyStage').classList.remove('hidden');$('code').value='';status('accessStatus','');}
