@@ -25,6 +25,7 @@
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:var(--muted)}
     .reservation{border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0;background:#fff}.rhead{display:flex;gap:10px;justify-content:space-between}.rtitle{font-weight:700;font-size:17px}.badge{height:max-content;border-radius:999px;padding:5px 9px;background:#eef2f6;font-size:12px;font-weight:700}.CONFIRMADA,.CONFIRMADA_ALTERADA{background:#eaf8ef;color:#06713b}.EM_ANALISE{background:#fff6df;color:#815500}.RECUSADA,.CANCELADA{background:#fff0ee;color:#9f231b}
     .schedule{margin-top:12px;padding-top:10px;border-top:1px solid #edf0f2}.schedule div{margin:5px 0}.cancelBox{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+    .cancelHint{margin:0 0 10px}.cancelOccurrences{display:grid;gap:8px;margin:10px 0}.cancelOccurrence{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fafcfa;cursor:pointer}.cancelOccurrence input{width:auto;margin:4px 0 0}.cancelOccurrence strong{display:block}.cancelOccurrence small{display:block;color:var(--muted);margin-top:2px}.cancelOccurrence.cancelled{background:#fff5f3;color:#9f231b;cursor:default}.cancelOccurrence.cancelled input{display:none}.cancelActions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.cancelActions .btn{width:100%}
     .actionsHome{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-top:15px}.actionsHome .btn{width:100%}
     .reservePanel{border-top:4px solid var(--green)}.stepTitle{display:flex;align-items:center;gap:9px;margin:18px 0 10px;font-size:18px;font-weight:700}.stepN{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#fff;font-size:14px}
     .choices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice{border:1px solid var(--line);border-radius:11px;padding:12px;cursor:pointer}.choice.active{border:2px solid var(--green);background:var(--pale)}.choice strong{display:block}.choice small{display:block;color:var(--muted);margin-top:4px}
@@ -34,7 +35,7 @@
     .selectedChips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.chip{border-radius:999px;background:#eaf8ef;color:#06713b;padding:5px 9px;font-size:12px;font-weight:700}.warning{background:#fff6df;color:#714b00;border:1px solid #f4d58b;border-radius:10px;padding:12px;margin-top:12px}.checkLine{display:flex;gap:9px;align-items:flex-start;font-weight:700;margin-top:13px}.checkLine input{width:auto;margin-top:4px}.successBox{background:#eaf8ef;color:#06713b;border-radius:12px;padding:15px;margin-top:12px}
     .spinner{width:18px;height:18px;border:3px solid #cfe5d7;border-top-color:var(--green);border-radius:50%;display:inline-block;vertical-align:-4px;margin-right:8px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
     footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
-    @media(max-width:600px){h1{font-size:26px}.card{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.rhead{display:block}.badge{display:inline-block;margin-top:7px}.btn{width:100%}.actionsHome{grid-template-columns:1fr 1fr}.actionsHome .primary{grid-column:1/-1}.choices{grid-template-columns:1fr}.dateGrid{grid-template-columns:1fr 1fr}.dateGrid>div:first-child{grid-column:1/-1}.rooms{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){h1{font-size:26px}.card{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.rhead{display:block}.badge{display:inline-block;margin-top:7px}.btn{width:100%}.actionsHome{grid-template-columns:1fr 1fr}.actionsHome .primary{grid-column:1/-1}.choices{grid-template-columns:1fr}.dateGrid{grid-template-columns:1fr 1fr}.dateGrid>div:first-child{grid-column:1/-1}.rooms{grid-template-columns:1fr 1fr}.cancelActions{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -142,8 +143,51 @@ async function consumeLink(token){status('accessStatus','Validando o link recebi
 function saveToken(t){localStorage.setItem('ifpbMinhaAreaToken',String(t||''))}function token(){return localStorage.getItem('ifpbMinhaAreaToken')||''}
 async function loadArea(){const t=token();if(!t){$('accessCard').classList.remove('hidden');$('dashboard').classList.add('hidden');return;}$('accessCard').classList.add('hidden');$('dashboard').classList.remove('hidden');status('areaStatus','Carregando suas reservas...');$('reservations').innerHTML='';try{const r=await api('minha',{accessToken:t});if(!r||!r.cadastroAvailable){localStorage.removeItem('ifpbMinhaAreaToken');$('dashboard').classList.add('hidden');$('accessCard').classList.remove('hidden');resetFlow();return status('accessStatus','O acesso expirou. Entre novamente.','error');}renderArea(r);}catch(e){status('areaStatus',e.message,'error')}}
 function renderArea(r){$('personName').textContent='Olá, '+String(r.pessoaNome||'').split(/\s+/)[0];$('personMeta').textContent=(r.pessoaNome||'')+(r.pessoaMatricula?' · Matrícula '+r.pessoaMatricula:'');$('avatar').textContent=String(r.pessoaNome||'U').charAt(0).toUpperCase();const c=r.contadores||{};$('nPending').textContent=c.emAnalise||0;$('nConfirmed').textContent=c.confirmadas||0;$('nRejected').textContent=c.recusadas||0;$('nCancelled').textContent=c.canceladas||0;status('areaStatus','');const list=r.items||[];if(!list.length){$('reservations').innerHTML='<div class="card">Nenhuma solicitação encontrada.</div>';return;}$('reservations').innerHTML=list.map(card).join('')}
-function card(x){const prog=(x.programacao||[]).map(g=>'<div><b>'+esc(g.data)+'</b>'+(g.itens||[]).map(i=>'<div>'+esc(i.inicio)+'–'+esc(i.fim)+' · '+esc(i.sala||'Sala não informada')+(i.alterada?' <b>(alterada pela CAA)</b>':'')+'</div>').join('')+'</div>').join('');return '<article class="reservation"><div class="rhead"><div><div class="rtitle">'+esc(x.titulo||'Reserva de sala')+'</div><div class="muted">Protocolo '+esc(x.protocolo)+' · '+esc(x.criadoEm||'')+'</div></div><span class="badge '+esc(x.statusVisual||'')+'">'+esc(x.statusLabel||x.status)+'</span></div><div class="schedule">'+prog+'</div>'+(x.motivoDecisao?'<p class="muted"><b>CAA:</b> '+esc(x.motivoDecisao)+'</p>':'')+(x.podeCancelar?'<div class="cancelBox"><label for="m_'+esc(x.protocolo)+'">Motivo do cancelamento</label><textarea id="m_'+esc(x.protocolo)+'" rows="2"></textarea><div class="btns"><button class="btn danger" onclick="cancelReservation(\''+esc(x.protocolo)+'\',this)">Cancelar reserva</button></div></div>':'')+'</article>'}
-async function cancelReservation(protocol,b){const motivo=$('m_'+protocol).value.trim();if(!motivo)return status('areaStatus','Informe o motivo do cancelamento.','error');if(!confirm('Deseja cancelar esta reserva? A sala será liberada imediatamente.'))return;busy(b,true,'Cancelando...');try{await api('cancelar',{protocolo:protocol,motivo,accessToken:token()});await loadArea();status('areaStatus','Reserva cancelada e sala liberada.','success')}catch(e){status('areaStatus',e.message,'error')}finally{busy(b,false)}}
+function occurrenceIsFuture(i){
+  if(String(i.status||'').trim().toUpperCase()!=='CONFIRMADA')return false;
+  const dataISO=String(i.dataISO||'').trim(),inicio=String(i.inicio||'').trim();
+  if(!dataISO||!inicio)return false;
+  const instante=new Date(dataISO+'T'+inicio+':00');
+  return !Number.isNaN(instante.getTime())&&instante.getTime()>Date.now();
+}
+function cancellationOccurrences(x){
+  const out=[];
+  (x.programacao||[]).forEach(g=>(g.itens||[]).forEach(i=>{
+    if(occurrenceIsFuture(i)&&i.ocorrenciaId)out.push(i);
+  }));
+  return out;
+}
+function cancellationBox(x){
+  if(!x.podeCancelar)return'';
+  const protocol=String(x.protocolo||''),items=cancellationOccurrences(x);
+  if(!items.length)return'';
+  const choices=items.map(i=>'<label class="cancelOccurrence"><input type="checkbox" value="'+esc(i.ocorrenciaId)+'"><span><strong>'+esc(i.data||i.dataISO||'Data não informada')+'</strong><small>'+esc(i.inicio||'')+'–'+esc(i.fim||'')+' · '+esc(i.sala||'Sala não informada')+'</small></span></label>').join('');
+  return '<div class="cancelBox"><p class="muted cancelHint">Para cancelar somente algumas datas, marque as ocorrências desejadas. Para encerrar tudo, use o botão de cancelamento integral.</p><div id="cancel_items_'+esc(protocol)+'" class="cancelOccurrences">'+choices+'</div><label for="m_'+esc(protocol)+'">Motivo do cancelamento</label><textarea id="m_'+esc(protocol)+'" rows="2" placeholder="Informe brevemente o motivo"></textarea><div class="cancelActions"><button class="btn danger" onclick="cancelReservation(\''+esc(protocol)+'\',this,false)">Cancelar datas selecionadas</button><button class="btn danger" onclick="cancelReservation(\''+esc(protocol)+'\',this,true)">Cancelar reserva inteira</button></div></div>';
+}
+function card(x){
+  const prog=(x.programacao||[]).map(g=>'<div><b>'+esc(g.data)+'</b>'+(g.itens||[]).map(i=>{const itemStatus=String(i.status||'').trim().toUpperCase(),cancelled=itemStatus==='CANCELADA';return '<div'+(cancelled?' style="color:#9f231b;text-decoration:line-through"':'')+'>'+esc(i.inicio)+'–'+esc(i.fim)+' · '+esc(i.sala||'Sala não informada')+(i.alterada?' <b>(alterada pela CAA)</b>':'')+(cancelled?' <b>(cancelada)</b>':'')+'</div>'}).join('')+'</div>').join('');
+  return '<article class="reservation"><div class="rhead"><div><div class="rtitle">'+esc(x.titulo||'Reserva de sala')+'</div><div class="muted">Protocolo '+esc(x.protocolo)+' · '+esc(x.criadoEm||'')+'</div></div><span class="badge '+esc(x.statusVisual||'')+'">'+esc(x.statusLabel||x.status)+'</span></div><div class="schedule">'+prog+'</div>'+(x.motivoDecisao?'<p class="muted"><b>CAA:</b> '+esc(x.motivoDecisao)+'</p>':'')+cancellationBox(x)+'</article>';
+}
+async function cancelReservation(protocol,b,total){
+  const motivo=$('m_'+protocol).value.trim();
+  if(!motivo)return status('areaStatus','Informe o motivo do cancelamento.','error');
+  const box=$('cancel_items_'+protocol);
+  const todas=box?Array.from(box.querySelectorAll('input[type="checkbox"]')):[];
+  let ocorrenciaIds=total?todas.map(el=>el.value):todas.filter(el=>el.checked).map(el=>el.value);
+  if(!total){
+    if(!ocorrenciaIds.length)return status('areaStatus','Selecione pelo menos uma data para cancelar.','error');
+  }
+  if(!ocorrenciaIds.length)return status('areaStatus','Não há datas futuras disponíveis para cancelamento.','error');
+  const pergunta=total?'Deseja cancelar todas as ocorrências futuras desta reserva?':'Deseja cancelar somente as datas selecionadas?';
+  if(!confirm(pergunta))return;
+  busy(b,true,'Cancelando...');
+  try{
+    const r=await api('cancelar',{protocolo:protocol,motivo,ocorrenciaIds,accessToken:token()});
+    await loadArea();
+    const mensagem=r&&r.cancelamentoTotal?'Reserva cancelada integralmente e salas liberadas.':'Datas selecionadas canceladas. As demais ocorrências permanecem confirmadas.';
+    status('areaStatus',mensagem,'success');
+  }catch(e){status('areaStatus',e.message,'error')}finally{busy(b,false)}
+}
 
 function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function timeMinutes(v){const a=String(v||'').split(':').map(Number);return (a[0]||0)*60+(a[1]||0)}
